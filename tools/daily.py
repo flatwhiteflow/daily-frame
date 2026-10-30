@@ -9,7 +9,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = 'https://flatwhiteflow.github.io/daily-frame'
+SITE = 'https://daily.fabiopetriccione.com'   # the custom domain: the old github.io address only redirects, and its redirect carries no CORS header
 W, H = 1672, 941
 
 today = datetime.now(ZoneInfo('Europe/Dublin')).strftime('%Y-%m-%d')

@@ -7,7 +7,7 @@ One picture a day, for the TV screensaver (Lumen, "Our pictures") and the websit
   and writes `manifest.json` (the TV), `history.json` (the website: every day shown so far) and `state.json`. It also makes the small
   archive copy in `thumbs/` (640 px wide) for any frame that has none yet.
 - To add pictures: convert with `cwebp -q 95 -m 6 -resize 1672 941 in.png -o frames/214-name.webp`. They come after the ones already shown.
-- The TV reads `manifest.json` and the website reads `history.json`, both from GitHub Pages (`main`, root).
+- The TV reads `manifest.json` and the website reads `history.json`, both from GitHub Pages (`main`, root), served at https://daily.fabiopetriccione.com (`CNAME`). The old `flatwhiteflow.github.io/daily-frame` address redirects there.
 
 ## The website
 
