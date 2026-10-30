@@ -1,0 +1,22 @@
+# One picture a day: copies the next frame in frames/ to latest.webp and updates manifest.json (what Lumen on the TV reads).
+name: daily frame
+on:
+  schedule:
+    - cron: '10 0 * * *'   # 00:10 UTC; the script uses the Dublin date
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: daily-frame
+jobs:
+  pick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/daily.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add latest.webp manifest.json state.json
+          git diff --cached --quiet || { git commit -m "Frame for $(date -u +%F)"; git push; }
