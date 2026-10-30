@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two of a Kind</title>
+<meta name="description" content="One illustration a day. Each one moves to the archive once its day is over.">
+<meta name="theme-color" content="#eee6db">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='7' width='26' height='18' rx='3' fill='%23000'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/outfit.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="site.css">
+<script>
+// before first paint: the look (?look=open) and the frame (?frame=, else the one picked last time, else black)
+(function (h, q) {
+	if (/[?&]look=open\b/.test(q)) h.classList.add('open');
+	var m = /[?&]frame=(black|oak|walnut|white)\b/.exec(q), f = m && m[1];
+	if (!f) try { f = localStorage.getItem('tok-frame'); } catch (e) {}
+	h.classList.add('frame-' + (/^(black|oak|walnut|white)$/.test(f) ? f : 'black'));
+})(document.documentElement, location.search);
+</script>
+<script src="site.js" defer></script>
+</head>
+<body>
+<a class="corner tl" href="#" id="home" aria-label="Two of a Kind, today"><span class="wordmark" aria-hidden="true"></span><span class="sr">Two of a Kind</span></a>
+<a class="corner tr" href="#archive" id="archive-link">Archive</a>
+<a class="corner bl" href="latest.webp" id="info" target="_blank" rel="noopener"><span id="info-title">Today</span> <span class="dim" id="info-when"></span></a>
+<a class="corner br" href="#about" id="about-link">About</a>
+<div class="frames" role="radiogroup" aria-label="Frame">
+	<button class="swatch swatch--black" type="button" role="radio" data-frame="black" aria-label="Black frame"></button>
+	<button class="swatch swatch--oak" type="button" role="radio" data-frame="oak" aria-label="Oak frame"></button>
+	<button class="swatch swatch--walnut" type="button" role="radio" data-frame="walnut" aria-label="Walnut frame"></button>
+	<button class="swatch swatch--white" type="button" role="radio" data-frame="white" aria-label="White frame"></button>
+</div>
+
+<main class="middle" id="middle">
+	<figure class="view view--pic" id="pic">
+		<div class="print"><img id="pic-img" src="latest.webp" width="1672" height="941" alt="Today's illustration" fetchpriority="high"></div>
+	</figure>
+
+	<section class="view view--archive" id="archive" aria-label="Archive" hidden>
+		<ol class="grid" id="grid"></ol>
+		<p class="note" id="archive-empty" hidden></p>
+	</section>
+
+	<section class="view view--about" id="about" aria-label="About" hidden>
+		<p class="note">One illustration a day. When its day is over, it moves to the archive, never before.</p>
+		<p class="note dim">Made by <a href="https://fabiopetriccione.com/">Fabio Petriccione</a>, with AI, inspired by <a href="https://www.youtube.com/@mochadott" rel="noopener">mochadott</a>.</p>
+	</section>
+</main>
+
+<p class="preview-note" id="preview-note" hidden>Preview: made-up history</p>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# local only: the made-up history behind ?preview, and design notes
+preview/
+.impeccable/
+PRODUCT.md
+.DS_Store

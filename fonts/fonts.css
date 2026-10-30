@@ -1,0 +1,4 @@
+/* The faces of fabiopetriccione.com, self-hosted (SIL Open Font License): Outfit (variable, from the portfolio's assets) and Instrument Serif (Latin subset, from Google Fonts). */
+@font-face { font-family: 'Outfit'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('outfit.woff2') format('woff2'); }
+@font-face { font-family: 'Instrument Serif'; font-style: normal; font-weight: 400; font-display: swap; src: url('instrument-serif.woff2') format('woff2'); }
+@font-face { font-family: 'Instrument Serif'; font-style: italic; font-weight: 400; font-display: swap; src: url('instrument-serif-italic.woff2') format('woff2'); }

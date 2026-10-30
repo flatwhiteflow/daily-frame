@@ -1,0 +1,190 @@
+/* Two of a Kind: one screen. The picture in the middle, four small links in the corners. Face from fabiopetriccione.com.
+   Framed (default): each picture is a print in its own cream mat, in a frame the visitor picks (black, oak, walnut, white), hung on an
+   oat wall. Open (?look=open): the page is the mat itself, so the illustration and its caption sit straight on it. */
+
+:root {
+	--mat: #fefada;            /* the pictures' own border, sampled from the frames */
+	--wall: #eee6db;           /* the portfolio's oat */
+	--bg: var(--wall);
+	--ink: #1f1a14;
+	--muted: #6e6152;
+	--line: rgba(40, 28, 16, 0.16);
+	--edge: clamp(16px, 2.6vw, 36px);
+	--ease: cubic-bezier(0.22, 1, 0.36, 1);
+	/* wood grain, drawn once as noise stretched along the timber: horizontal for the top and bottom rails, vertical for the sides.
+	   Each tile is longer than any rail (2400px), so the grain never repeats with a visible seam. */
+	--grain-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0025 .32' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+	--grain-v: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='2400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.32 .0025' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+	/* the frame in use (black by default) and the light catching its inner edge */
+	--wood: #1d1a17;
+	--lip: rgba(255, 255, 255, 0.10);
+	color-scheme: light;
+}
+html.frame-oak { --wood: #b8894f; --lip: rgba(255, 236, 200, 0.35); }
+html.frame-walnut { --wood: #5a3a25; --lip: rgba(255, 220, 180, 0.16); }
+html.frame-white { --wood: #f4f0e7; --lip: rgba(255, 255, 255, 0.8); }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+	margin: 0;
+	overflow: hidden;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 14px/1.4 'Outfit', Arial, sans-serif;
+	letter-spacing: -0.005em;
+	-webkit-font-smoothing: antialiased;
+}
+html.open { --bg: var(--mat); --ink: #000; --muted: #6e6a52; }
+::selection { background: var(--ink); color: var(--bg); }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; border-radius: 3px; }
+img { display: block; }
+[hidden] { display: none !important; }
+.dim { color: var(--muted); }
+
+/* ---------- the four corners ---------- */
+.corner {
+	position: fixed;
+	z-index: 2;
+	padding: 6px 2px;
+	transition: opacity 0.3s var(--ease);
+	font-variant-numeric: tabular-nums;
+}
+.corner:hover { opacity: 0.6; }
+.corner[aria-current='page'] { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.tl { top: var(--edge); left: var(--edge); font-weight: 500; }
+/* the lettering printed on every picture, traced to a vector and filled with the ink colour. Sized like the other corner text: its
+   capitals match the 14px text's cap height, and as an inline-block it sits on the same baseline */
+.wordmark {
+	display: inline-block;
+	vertical-align: baseline;
+	height: 10.5px;
+	aspect-ratio: 1531 / 172;
+	background: currentColor;
+	-webkit-mask: url('assets/two-of-a-kind.svg') left center / contain no-repeat;
+	mask: url('assets/two-of-a-kind.svg') left center / contain no-repeat;
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.tr { top: var(--edge); right: var(--edge); }
+.bl { bottom: var(--edge); left: var(--edge); max-width: calc(100vw - 2 * var(--edge) - 80px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.br { bottom: var(--edge); right: var(--edge); }
+.preview-note { position: fixed; bottom: var(--edge); left: 50%; margin: 0 0 6px; transform: translateX(-50%); color: var(--muted); font-size: 12px; }
+
+/* ---------- frame picker: four small swatches, top centre ---------- */
+.frames {
+	position: fixed;
+	z-index: 2;
+	top: var(--edge);
+	left: 50%;
+	display: flex;
+	gap: 10px;
+	margin: 0;
+	padding: 8px 4px;
+	transform: translateX(-50%);
+}
+html.open .frames { display: none; }
+.swatch {
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	background: var(--grain-h) 0 0 / 120px 24px, var(--sw);
+	background-blend-mode: multiply;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+	transition: transform 0.25s var(--ease);
+}
+.swatch:hover { transform: scale(1.15); }
+.swatch[aria-checked='true'] { outline: 1.5px solid var(--ink); outline-offset: 3px; }
+.swatch--black { --sw: #1d1a17; }
+.swatch--oak { --sw: #b8894f; }
+.swatch--walnut { --sw: #5a3a25; }
+.swatch--white { --sw: #f4f0e7; }
+
+/* ---------- the middle ---------- */
+.middle {
+	position: fixed;
+	inset: calc(var(--edge) + 40px) var(--edge);
+	display: grid;
+	place-items: center;
+}
+.view { grid-area: 1 / 1; margin: 0; animation: in 0.6s var(--ease) both; }
+/* the archive scroller takes focus when #archive opens; its links keep their own focus ring */
+.view:focus, .view:focus-visible { outline: none; }
+@keyframes in { from { opacity: 0; } }
+
+.view--pic .print {
+	/* framed, it hangs with some wall around it, clear of the corner links */
+	width: min(calc(100vw - 2 * var(--edge) - 7vw), calc((100vh - 2 * var(--edge) - 170px) * 1.7768));
+	width: min(calc(100vw - 2 * var(--edge) - 7vw), calc((100svh - 2 * var(--edge) - 170px) * 1.7768));
+	--fw: clamp(10px, 1.15vw, 20px);
+}
+html.open .view--pic .print { width: min(calc(100vw - 2 * var(--edge)), calc((100svh - 2 * var(--edge) - 80px) * 1.7768)); }
+.view--pic img { width: 100%; height: auto; }
+.view--pic img.swap { animation: in 0.5s var(--ease) both; }
+
+/* the print in its frame: the picture as it is (its own cream mat, square corners), inside a moulding whose grain runs along each rail
+   and meets at mitred corners. The base carries the top and bottom rails; ::before and ::after lay the side rails over it. */
+.print {
+	--fw: 6px;
+	position: relative;
+	display: block;
+	padding: var(--fw);
+	background: var(--grain-h) 0 0 / 2400px 140px, var(--wood);
+	box-shadow:
+		inset 0 1px 0 var(--lip), inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+		0 1px 2px rgba(30, 20, 10, 0.2), 0 22px 48px -22px rgba(40, 28, 16, 0.55);
+}
+.print::before, .print::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: var(--grain-v) 0 0 / 140px 2400px, var(--wood);
+	pointer-events: none;
+}
+.print::before { clip-path: polygon(0 0, var(--fw) var(--fw), var(--fw) calc(100% - var(--fw)), 0 100%); box-shadow: inset 1px 0 0 var(--lip); }
+.print::after { clip-path: polygon(100% 0, 100% 100%, calc(100% - var(--fw)) calc(100% - var(--fw)), calc(100% - var(--fw)) var(--fw)); box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.3); }
+/* grain shows on the bare timber (oak, walnut); the painted frames (black, white) are smooth */
+.print, .print::before, .print::after { background-blend-mode: multiply; }
+.print img { position: relative; z-index: 1; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.16), 0 1px 3px rgba(0, 0, 0, 0.18); }
+html:not(.frame-oak):not(.frame-walnut) .print, html:not(.frame-oak):not(.frame-walnut) .print::before, html:not(.frame-oak):not(.frame-walnut) .print::after { background-image: none; }
+html.open .print { padding: 0; background: none; box-shadow: none; }
+html.open .print::before, html.open .print::after { content: none; }
+html.open .print img { box-shadow: none; }
+
+/* archive: past days only, scrolling inside the middle while the corners stay put */
+.view--archive { align-self: stretch; justify-self: stretch; overflow-y: auto; padding: 8px 6px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 30px 24px;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0;
+	list-style: none;
+}
+.grid a { display: block; }
+.grid .print { --fw: 6px; transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease); }
+.grid a:hover .print { transform: translateY(-3px); }
+.grid img { width: 100%; height: auto; aspect-ratio: 1672 / 941; }
+.grid .cap { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
+.grid a:hover .cap { color: var(--ink); }
+
+.view--about { max-width: 34ch; text-align: center; }
+.note { margin: 0 0 10px; font-size: 15px; line-height: 1.55; text-align: center; }
+.note a { border-bottom: 1px solid var(--line); }
+.note a:hover { border-color: var(--ink); }
+.view--archive .note { margin-top: 30vh; }
+
+@media (prefers-reduced-motion: reduce) { .view, .view--pic img.swap { animation: none; } .grid .print, .swatch { transition: none; } }
+@media (max-width: 600px) {
+	.middle { inset: calc(var(--edge) + 36px) var(--edge); }
+	.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 14px; }
+	.grid .print { --fw: 4px; }
+	.view--pic .print { --fw: 7px; width: 100%; }
+	.frames { gap: 8px; top: auto; bottom: calc(var(--edge) + 40px); }   /* the wordmark needs the top row */
+	.preview-note { display: none; }   /* local preview only; no room beside the bottom corners */
+	.swatch { width: 14px; height: 14px; }
+}

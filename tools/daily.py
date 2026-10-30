@@ -28,4 +28,9 @@ shutil.copyfile(os.path.join(ROOT, 'frames', frames[i]), os.path.join(ROOT, 'lat
 manifest = {'updated': today, 'photos': [{'url': SITE + '/latest.webp', 'w': W, 'h': H, 'date': today}]}
 json.dump(manifest, open(os.path.join(ROOT, 'manifest.json'), 'w'), indent=2)
 json.dump({'next': (i + 1) % len(frames), 'date': today, 'file': frames[i]}, open(state_path, 'w'), indent=2)
+# history.json: every day shown, oldest first. The website shows the last one as today's and puts a day in its archive only once the next day has replaced it
+history_path = os.path.join(ROOT, 'history.json')
+history = json.load(open(history_path)) if os.path.exists(history_path) else []
+history.append({'date': today, 'file': frames[i]})
+json.dump(history, open(history_path, 'w'), indent=2)
 print(f'{today}: {frames[i]} ({i + 1} of {len(frames)})')

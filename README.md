@@ -1,8 +1,22 @@
 # daily-frame
 
-One picture a day for the TV screensaver (Lumen, "Our pictures").
+One picture a day, for the TV screensaver (Lumen, "Our pictures") and the website "Two of a Kind".
 
 - `frames/` the pictures, numbered `001-name.webp`, 1672 x 941, WebP quality 95. They are shown in number order, one a day.
-- `tools/daily.py` and `.github/workflows/daily.yml` pick the next one every day and write `latest.webp`, `manifest.json` and `state.json`.
+- `.github/workflows/daily.yml` runs `tools/daily.py` every night (00:10 UTC, Dublin date). It copies the next frame to `latest.webp`
+  and writes `manifest.json` (the TV), `history.json` (the website: every day shown so far) and `state.json`. It also makes the small
+  archive copy in `thumbs/` (640 px wide) for any frame that has none yet.
 - To add pictures: convert with `cwebp -q 95 -m 6 -resize 1672 941 in.png -o frames/214-name.webp`. They come after the ones already shown.
-- The TV reads `https://flatwhiteflow.github.io/daily-frame/manifest.json` (GitHub Pages from `main`, root).
+- The TV reads `manifest.json` and the website reads `history.json`, both from GitHub Pages (`main`, root).
+
+## The website
+
+`index.html`, `site.css`, `site.js`: one screen with today's picture in a frame (black, oak, walnut or white, picked with the swatches at
+the top; `?frame=oak` in a link), and four corner links: the wordmark (back to today), Archive, the title and countdown, About.
+The archive lists only days before today: a picture appears there once the next one has replaced it. Each past day has its own link,
+`#YYYY-MM-DD`; arrow keys step through the days. `?look=open` shows the pictures without a frame, straight on their own cream.
+
+- `assets/two-of-a-kind.svg` is the wordmark, traced from the lettering printed on the frames.
+- `fonts/` holds Outfit and Instrument Serif (SIL Open Font License), self-hosted.
+- To try it locally: `python3 -m http.server 8642`, then open `http://127.0.0.1:8642/`. `?preview` adds a made-up 52-day history
+  (`preview/history.json`, not committed) to see a full archive.

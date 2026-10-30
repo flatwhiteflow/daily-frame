@@ -1,4 +1,5 @@
-# One picture a day: copies the next frame in frames/ to latest.webp and updates manifest.json (what Lumen on the TV reads).
+# One picture a day: copies the next frame in frames/ to latest.webp and updates manifest.json (what Lumen on the TV reads)
+# and history.json (what the website reads). Also makes the small archive copy in thumbs/ for any frame that has none yet.
 name: daily frame
 on:
   schedule:
@@ -14,9 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 tools/daily.py
+      - name: Thumbnails for new frames
+        run: |
+          need=0
+          for f in frames/*.webp; do [ -f "thumbs/${f#frames/}" ] || need=1; done
+          if [ "$need" = 1 ]; then
+            sudo apt-get install -y -qq webp >/dev/null
+            for f in frames/*.webp; do t="thumbs/${f#frames/}"; [ -f "$t" ] || cwebp -quiet -q 80 -m 6 -resize 640 0 "$f" -o "$t"; done
+          fi
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add latest.webp manifest.json state.json
+          git add latest.webp manifest.json state.json history.json thumbs
           git diff --cached --quiet || { git commit -m "Frame for $(date -u +%F)"; git push; }
