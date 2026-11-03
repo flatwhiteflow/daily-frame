@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Check daily picker
+        run: python3 -m unittest discover -s tools -p 'test_*.py'
       - run: python3 tools/daily.py
       - name: Thumbnails for new frames
         run: |
