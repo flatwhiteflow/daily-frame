@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="fonts/outfit.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261121">
 <script>
 // before first paint: the look (?look=open) and the frame (?frame=, else the one picked last time, else black)
 (function (h, q) {
@@ -21,7 +21,7 @@
 	h.classList.add('frame-' + (/^(black|oak|walnut|white)$/.test(f) ? f : 'black'));
 })(document.documentElement, location.search);
 </script>
-<script src="site.js" defer></script>
+<script src="site.js?v=20261121" defer></script>
 </head>
 <body>
 <a class="corner tl" href="#" id="home" aria-label="Two of a Kind, today"><span class="wordmark" aria-hidden="true"></span><span class="sr">Two of a Kind</span></a>
@@ -38,6 +38,13 @@
 <main class="middle" id="middle">
 	<figure class="view view--pic" id="pic">
 		<div class="print"><img id="pic-img" src="latest.webp" width="1672" height="941" alt="Today's illustration" fetchpriority="high"></div>
+		<button class="day-nav day-nav--previous" id="previous-day" type="button" aria-label="Previous picture" aria-keyshortcuts="ArrowLeft" title="Previous picture (left arrow key)" hidden>
+			<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+		</button>
+		<button class="day-nav day-nav--next" id="next-day" type="button" aria-label="Next picture" aria-keyshortcuts="ArrowRight" title="Next picture (right arrow key)" hidden>
+			<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg>
+		</button>
+		<figcaption class="browse-hint" id="browse-hint" hidden>Browse with your arrow keys</figcaption>
 	</figure>
 
 	<section class="view view--archive" id="archive" aria-label="Archive" hidden>

@@ -43,6 +43,10 @@
 		img.alt = title(d.file) + ', ' + nice(d.date);
 		$('info').href = src;
 		$('info-title').textContent = title(d.file);
+		var previous = $('previous-day'), next = $('next-day');
+		previous.hidden = next.hidden = $('browse-hint').hidden = days.length < 2;
+		previous.disabled = i === 0;
+		next.disabled = isToday;
 		clearInterval(tick);
 		if (isToday) {
 			var draw = function () {
@@ -89,6 +93,13 @@
 		showDay(i >= 0 ? i : days.length - 1);
 	}
 	function current () { var h = location.hash.slice(1); for (var k = 0; k < days.length; k++) if (days[k].date === h) return k; return days.length - 1; }
+	function stepDay (direction) {
+		if (!days.length || $('pic').hidden) return;
+		var i = current() + direction;
+		if (i < 0 || i >= days.length) return;
+		if (i === days.length - 1) $('home').click();
+		else location.hash = days[i].date;
+	}
 
 	function load () {
 		fetch((PREVIEW ? 'preview/history.json' : 'history.json') + '?t=' + Math.floor(Date.now() / 60000), {cache: 'no-store'})
@@ -107,14 +118,18 @@
 
 	window.addEventListener('hashchange', route);
 	$('home').addEventListener('click', function (e) { e.preventDefault(); history.pushState(null, '', location.pathname + location.search); route(); });
+	$('previous-day').addEventListener('click', function () { stepDay(-1); });
+	$('next-day').addEventListener('click', function () { stepDay(1); });
 	document.addEventListener('keydown', function (e) {
+		if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.isComposing || e.target.closest('input, textarea, select, [contenteditable], .frames')) return;
 		if (!days.length || $('pic').hidden) {
 			if (e.key === 'Escape' && location.hash) $('home').click();
 			return;
 		}
-		var i = current();
-		if (e.key === 'ArrowLeft' && i > 0) location.hash = days[i - 1].date;
-		else if (e.key === 'ArrowRight' && i < days.length - 1) { if (i + 1 === days.length - 1) $('home').click(); else location.hash = days[i + 1].date; }
+		if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+			e.preventDefault();
+			stepDay(e.key === 'ArrowLeft' ? -1 : 1);
+		}
 	});
 	// the day changes at midnight: look for the new picture every two minutes after that
 	setInterval(function () { if (days.length && days[days.length - 1].date < today()) load(); }, 120000);

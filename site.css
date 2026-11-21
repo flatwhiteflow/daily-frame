@@ -115,13 +115,44 @@ html.open .frames { display: none; }
 .view:focus, .view:focus-visible { outline: none; }
 @keyframes in { from { opacity: 0; } }
 
+.view--pic { position: relative; }
+.day-nav {
+	position: absolute;
+	top: calc(50% - 22px);
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--muted);
+	cursor: pointer;
+	transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.day-nav--previous { left: -64px; }
+.day-nav--next { right: -64px; }
+.day-nav:hover:not(:disabled) { background: var(--line); color: var(--ink); }
+.day-nav:disabled { opacity: 0.25; cursor: default; }
+.browse-hint {
+	position: absolute;
+	top: calc(100% + 22px);
+	left: 0;
+	width: 100%;
+	margin: 0;
+	color: var(--muted);
+	font-size: 12px;
+	text-align: center;
+}
+
 .view--pic .print {
 	/* framed, it hangs with some wall around it, clear of the corner links */
 	width: min(calc(100vw - 2 * var(--edge) - 7vw), calc((100vh - 2 * var(--edge) - 170px) * 1.7768));
 	width: min(calc(100vw - 2 * var(--edge) - 7vw), calc((100svh - 2 * var(--edge) - 170px) * 1.7768));
 	--fw: clamp(10px, 1.15vw, 20px);
 }
-html.open .view--pic .print { width: min(calc(100vw - 2 * var(--edge)), calc((100svh - 2 * var(--edge) - 80px) * 1.7768)); }
+html.open .view--pic .print { width: min(calc(100vw - 2 * var(--edge) - 120px), calc((100svh - 2 * var(--edge) - 120px) * 1.7768)); }
 .view--pic img { width: 100%; height: auto; }
 .view--pic img.swap { animation: in 0.5s var(--ease) both; }
 
@@ -178,11 +209,20 @@ html.open .print img { box-shadow: none; }
 .note a:hover { border-color: var(--ink); }
 .view--archive .note { margin-top: 30vh; }
 
-@media (prefers-reduced-motion: reduce) { .view, .view--pic img.swap { animation: none; } .grid .print, .swatch { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .view, .view--pic img.swap { animation: none; } .grid .print, .swatch, .day-nav { transition: none; } }
+@media (max-width: 1000px) {
+	.day-nav { top: calc(100% + 12px); }
+	.day-nav--previous { left: 0; }
+	.day-nav--next { right: 0; }
+	.browse-hint { top: calc(100% + 25px); padding: 0 48px; }
+	html.open .view--pic .print { width: min(calc(100vw - 2 * var(--edge)), calc((100svh - 2 * var(--edge) - 170px) * 1.7768)); }
+}
+@media (hover: none) and (pointer: coarse) { .browse-hint { display: none; } }
 @media (max-width: 600px) {
 	.middle { inset: calc(var(--edge) + 36px) var(--edge); }
 	.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 14px; }
 	.grid .print { --fw: 4px; }
+	.view--pic { width: 100%; }
 	.view--pic .print { --fw: 7px; width: 100%; }
 	.frames { gap: 8px; top: auto; bottom: calc(var(--edge) + 40px); }   /* the wordmark needs the top row */
 	.preview-note { display: none; }   /* local preview only; no room beside the bottom corners */
